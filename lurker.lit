@@ -1,0 +1,41 @@
+var lastUpdate = systemTime()
+var files = {}
+var initDone = false
+
+function checkDirectory(dir) {
+	for (var d in Directory.listDirectories(dir)) {
+		checkDirectory($"{dir}/{d}")
+	}
+
+	for (var f in Directory.listFiles(dir)) {
+		var path = $"{dir}/{f}"
+
+		if (path.endsWith(".lit")) {
+			if (initDone) {
+	      var lastModified = File.getLastModified(path)
+	      var v = files[path]
+
+				if (v < lastModified) {
+					var p = path.substring(2, -5)
+					print($"[lurker] Updating {p}")
+					require(p, true)
+					files[path] = lastModified
+				}
+			} else {
+				files[path] = lastUpdate
+			}
+		}
+	}
+}
+
+export function updateLurker(dt) {
+	var t = systemTime()
+
+	if (t - lastUpdate > 0.5) {
+		lastUpdate = t
+		checkDirectory(".")
+	}
+}
+
+checkDirectory(".")
+initDone = true
