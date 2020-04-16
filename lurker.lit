@@ -12,8 +12,8 @@ function checkDirectory(dir) {
 
 		if (path.endsWith(".lit")) {
 			if (initDone) {
-	      var lastModified = File.getLastModified(path)
-	      var v = files[path]
+				var lastModified = File.getLastModified(path)
+				var v = files[path]
 
 				if (v < lastModified) {
 					var p = path.substring(2, -5)
